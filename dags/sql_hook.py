@@ -73,7 +73,7 @@ def sql_processing():
         f"DATABASE={conn.schema};"
         f"UID={conn.login};"
         f"PWD={conn.password};"
-        "Encrypt=yes;"
+        "Encrypt=no;"
         )
 
         with pyodbc.connect(conn_str) as c:
