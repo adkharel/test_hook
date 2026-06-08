@@ -38,8 +38,9 @@ from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperato
 from airflow.hooks.base import BaseHook
 import pyodbc
 from airflow.decorators import task, dag
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime
 import pandas as pd
 
@@ -73,7 +74,8 @@ def sql_processing():
         f"DATABASE={conn.schema};"
         f"UID={conn.login};"
         f"PWD={conn.password};"
-        "Encrypt=no;"
+        f"Encrypt=yes;"
+        f"TrustServerCertificate=yes;"
         )
 
         with pyodbc.connect(conn_str) as c:
