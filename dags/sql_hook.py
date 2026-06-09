@@ -2,8 +2,7 @@
 from airflow.hooks.base import BaseHook
 import pyodbc
 from airflow.decorators import task, dag
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
 from datetime import datetime
 import pandas as pd
 
@@ -35,7 +34,7 @@ def sql_processing():
         conn_str = (
         f"DRIVER={{ODBC Driver 18 for SQL Server}};"
         f"SERVER={conn.host},{conn.port or 1433};"
-        f"DATABASE={conn.schema};"
+        f"DATABASE={"webtest1"};"
         f"UID={conn.login};"
         f"PWD={conn.password};"
         "Encrypt=no;"
