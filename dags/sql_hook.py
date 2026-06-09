@@ -36,8 +36,6 @@ def first_dag():
         f"DATABASE={conn.schema};"
         f"UID={conn.login};"
         f"PWD={conn.password};"
-        f"Encrypt=yes;"
-        f"TrustServerCertificate=yes;"
         )
 
         with pyodbc.connect(conn_str) as c:
@@ -53,7 +51,7 @@ def first_dag():
     downloaded = read_data()
     start >> first >> downloaded
 
-if __name__ == "__main__":
-    print("Testing the DAG...")
-    execution = first_dag()
-    execution.test()
+# if __name__ == "__main__":
+#     print("Testing the DAG...")
+#     execution = first_dag()
+#     execution.test()
