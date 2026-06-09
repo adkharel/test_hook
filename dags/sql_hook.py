@@ -1,9 +1,11 @@
-from airflow.sdk import dag, task  
-from airflow.sdk.bases.hook import BaseHook
-import pyodbc
-from airflow.providers.standard.operators.empty import EmptyOperator
-from datetime import datetime
 
+from airflow.hooks.base import BaseHook
+import pyodbc
+from airflow.decorators import task, dag
+from airflow.operators.empty import EmptyOperator
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+import pandas as pd
 
 default_args = {
     'owner': 'Aditya',
@@ -11,14 +13,13 @@ default_args = {
 }
 
 @dag(
-        dag_id = "sql_processing",
         default_args=default_args, 
         schedule="@once", 
         description="Simple SQL Test", 
         catchup=False, 
         tags=['DB1-DEV']
 )
-def first_dag():
+def sql_processing():
 
     # Task Definition
     start = EmptyOperator(task_id='start')
@@ -36,6 +37,7 @@ def first_dag():
         f"DATABASE={conn.schema};"
         f"UID={conn.login};"
         f"PWD={conn.password};"
+        "Encrypt=no;"
         )
 
         with pyodbc.connect(conn_str) as c:
@@ -51,7 +53,4 @@ def first_dag():
     downloaded = read_data()
     start >> first >> downloaded
 
-# if __name__ == "__main__":
-#     print("Testing the DAG...")
-#     execution = first_dag()
-#     execution.test()
+execution = sql_processing()
