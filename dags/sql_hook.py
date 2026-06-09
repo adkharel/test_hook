@@ -30,6 +30,7 @@ def first_dag():
     @task
     def read_data():
         conn = BaseHook.get_connection("sql_server_conn")
+        print(conn.schema)
         conn_str = (
         f"DRIVER={{ODBC Driver 18 for SQL Server}};"
         f"SERVER={conn.host},{conn.port or 1433};"
