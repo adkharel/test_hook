@@ -1,48 +1,9 @@
-from airflow.hooks.base import BaseHook
+from airflow.sdk import dag, task  
+from airflow.sdk.bases.hook import BaseHook
 import pyodbc
-from datetime import datetime
-from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
-
-# def test_sqlserver_connection():
-#     conn = BaseHook.get_connection("sql_server_conn")
-
-#     conn_str = (
-#         f"DRIVER={{ODBC Driver 18 for SQL Server}};"
-#         f"SERVER={conn.host},{conn.port or 1433};"
-#         f"DATABASE={conn.schema};"
-#         f"UID={conn.login};"
-#         f"PWD={conn.password};"
-#         "Encrypt=yes;"
-#     )
-
-#     with pyodbc.connect(conn_str) as c:
-#         cursor = c.cursor()
-#         cursor.execute("SELECT 1")
-#         print(cursor.fetchone())
-
-# with DAG(
-#     dag_id="azure_aks_python_etl",
-#     start_date=datetime(2026, 1, 1),
-#     schedule="@once",
-#     catchup=False,
-# ) as dag:
-#     test_sqlserver_connection_task = KubernetesPodOperator(
-#         task_id="test_sqlserver_connection",
-#         name="test-sqlserver-connection",
-#         namespace="default",
-#         image="python:3.9-slim",
-#         cmds=["python", "-c"],
-#     )
-
-from airflow.hooks.base import BaseHook
-import pyodbc
-from airflow.decorators import task, dag
 from airflow.providers.standard.operators.empty import EmptyOperator
-from airflow.providers.standard.operators.bash import BashOperator
-from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime
-import pandas as pd
+
 
 default_args = {
     'owner': 'Aditya',
@@ -50,13 +11,14 @@ default_args = {
 }
 
 @dag(
+        dag_id = "sql_processing",
         default_args=default_args, 
         schedule="@once", 
         description="Simple SQL Test", 
         catchup=False, 
         tags=['DB1-DEV']
 )
-def sql_processing():
+def first_dag():
 
     # Task Definition
     start = EmptyOperator(task_id='start')
@@ -91,4 +53,7 @@ def sql_processing():
     downloaded = read_data()
     start >> first >> downloaded
 
-execution = sql_processing()
+if __name__ == "__main__":
+    print("Testing the DAG...")
+    execution = first_dag()
+    execution.test()
